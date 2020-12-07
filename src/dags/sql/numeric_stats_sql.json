@@ -1,0 +1,8 @@
+{
+  "fact_table": "project.dataset.table",
+  "feature_columns" : [
+    "col1",
+    "col2",
+    "col3"
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "bb_features": {
+    "features" : [
+    {
+      "fact": "fullVisitorId",
+      "type": "Id"
+    },{
+      "fact": "visitId",
+      "type": "Id"
+    },{
+      "fact": "visitStartTime",
+      "type": "Timestamp"
+    },{
+      "fact": "most_recent_lead",
+      "type": "Numeric",
+      "accumulators": "recent"
+    },{
+      "fact": "totals.transactions",
+      "type": "Numeric",
+      "accumulators": ["sum", "average", "averageByTenure"]
+    },{
+      "fact": "totals.timeOnSite",
+      "type": "Numeric",
+      "accumulators": ["sum", "average", "averageByTenure"]
+    },{
+      "fact": "totals.sessionQualityDim",
+      "type": "Numeric",
+      "accumulators": ["sum", "average", "averageByTenure"]
+    },{
+      "fact": "totals.totalTransactionRevenue",
+      "type": "Numeric",
+      "accumulators": ["sum", "average", "averageByTenure"]
+    },{
+      "fact": "totals.pageviews",
+      "type": "Numeric",
+      "accumulators": ["sum", "average", "averageByTenure"]
+    },{
+      "fact": "totals.transactionRevenue",
+      "type": "Numeric",
+      "accumulators": ["sum", "average", "averageByTenure"]
+    },{
+      "fact": "totals.hits",
+      "type": "Numeric",
+      "accumulators": ["sum", "average", "averageByTenure"]
+    },{
+      "fact": "geoNetwork.region",
+      "type": "Categorical",
+      "accumulators": "recent"
+    },{
+      "fact": "trafficSource.keyword",
+      "type": "Categorical",
+      "accumulators": ["count", "proportions", "mostFreq", "recent"],
+      "topN": ["(not set)", "(not provided)",
+               "(Remarketing/Content targeting)", "Google Merchandise Store",
+               "(automatic matching)", "google t"]
+    },{
+      "fact": "device.isMobile",
+      "type": "Categorical",
+      "accumulators": "recent"
+    },{
+      "fact": "device.mobileDeviceBranding",
+      "type": "Categorical",
+      "accumulators": "recent",
+      "topN": ["Xiaomi", "Samsung", "Vivo", "OPPO", "Realme", "Apple",
+               "OnePlus", "(not set)", "Huawei", "Motorola"]
+    },{
+      "fact": "device.operatingSystem",
+      "type": "Categorical",
+      "accumulators": "recent",
+      "topN": ["Android", "Windows", "Linux", "iOS", "Macintosh", "Chrome OS"]
+    },{
+      "fact": "device.deviceCategory",
+      "type": "Categorical",
+      "accumulators": "recent"
+    },{
+      "fact": "device.browser",
+      "type": "Categorical",
+      "accumulators": "recent",
+      "topN": ["Chrome", "Android Webview", "Samsung Internet", "Safari",
+               "Firefox", "UC Browser", "Internet Explorer", "Edge", "Opera",
+               "Safari (in-app)"]
+    },{
+      "fact": "trafficSource.source",
+      "type": "Categorical",
+      "accumulators": ["count", "proportions", "mostFreq", "recent"],
+      "topN": ["google.com.vn","ph.search.yahoo.com","ask", "m.baidu.com",
+               "baidu", "productforums.google.com","sites.google.com",
+               "mail.google.com", "dfa","analytics.google.com", "qiita.com",
+               "adwords.google.com","support.google.com","datastudio.google.com",
+               "google.com","Partners","blog.golang.org","sashihara.jp","yahoo",
+               "docs.google.com","int.search.tb.ask.com","google.com.tw","bing",
+               "dealspotr.com","l.facebook.com","m.facebook.com","quora.com",
+               "groups.google.com","youtube.com","facebook.com","lm.facebook.com",
+               "reddit.com","away.vk.com","pinterest.com"]
+    },{
+      "fact": "geoNetwork.city",
+      "type": "Categorical",
+      "accumulators": "recent"
+    },{
+      "fact": "channelGrouping",
+      "type": "Categorical",
+      "accumulators": ["count", "proportions", "mostFreq", "recent"],
+      "topN": ["Organic Search", "Direct", "Referral", "Paid Search", "Display",
+               "Affiliates", "Social"]
+    },{
+      "fact": "trafficSource.medium",
+      "type": "Categorical",
+      "accumulators": ["count", "proportions", "mostFreq", "recent"],
+      "topN": ["referral", "organic", "cpm", "affiliate"]
+    },{
+      "fact": "hits.page.pagePathLevel1",
+      "type": "Categorical",
+      "accumulators": ["count", "proportions", "mostFreq", "recent"],
+      "topN": ["/google+redesign/", "/store.html", "/home"],
+      "sql": "REGEXP_REPLACE(hits.page.pagePathLevel1, '\\\\?.*$', '')"
+    },{
+      "fact": "hits.page.pagePathLevel2",
+      "type": "Categorical",
+      "accumulators": ["count", "proportions", "mostFreq", "recent"],
+      "topN": ["/electronics", "/apparel/",
+               "/shop+by+brand/", "/office/",
+               "/bags"],
+      "sql": "REGEXP_REPLACE(hits.page.pagePathLevel2, '\\\\?.*$', '')"
+    },{
+      "fact": "hits.page.pagePathLevel3",
+      "type": "Categorical",
+      "accumulators": ["count", "proportions", "mostFreq", "recent"],
+      "topN": ["/notebooks++journals", "/mens", "/power", "/womens", "/kids",
+              "/backpacks"],
+      "sql": "REGEXP_REPLACE(hits.page.pagePathLevel3, '\\\\?.*$', '')"
+    },{
+      "fact": "target",
+      "type": "Categorical",
+      "sql": "(hits.page.pagePathLevel1 = '/cart' or  hits.page.pagePathLevel2 = '/cart' or hits.page.pagePathLevel3 = '/cart')"
+    }
+  ]
+  }
+}

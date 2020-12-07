@@ -1,0 +1,22 @@
+{% set days_since_lead_sql = 'DATETIME_DIFF(effectiveDate, EXTRACT(DATETIME FROM
+                              TIMESTAMP_SECONDS(CAST(RECENT_most_recent_lead AS INT64))), DAY)' %}
+WITH Buckets AS (
+  SELECT
+    BB_id,
+    CASE FLOOR(RAND()*10) WHEN 0 THEN 'TEST' WHEN 1 THEN 'VALIDATE' ELSE 'TRAIN' END AS MLDataSplit
+  FROM (
+    SELECT
+      DISTINCT RECENT_BB_id AS BB_id
+    FROM `{{ features_table }}`
+    WHERE RECENT_most_recent_lead <> ''
+      AND {{ days_since_lead_sql }} <= 7
+  )
+)
+SELECT
+  * EXCEPT({{ exclude_from_output|join(', ') }}),
+  {{ days_since_lead_sql }} AS days_since_recent_lead
+FROM `{{ features_table }}` AS Features
+LEFT OUTER JOIN
+  Buckets ON Features.RECENT_BB_id = Buckets.BB_id
+WHERE RECENT_most_recent_lead <> ''
+  AND {{ days_since_lead_sql }} <= {{ inclusion_recency_days }};

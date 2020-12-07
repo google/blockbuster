@@ -1,0 +1,9 @@
+{
+  "features_table": "project.dataset.table",
+  "exclude_from_output" : [
+    "col1",
+    "col2",
+    "col3"
+  ],
+  "inclusion_recency_days": 7
+}

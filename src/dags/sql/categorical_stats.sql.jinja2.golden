@@ -1,0 +1,44 @@
+WITH Features AS (
+  SELECT
+    FORMAT_TIMESTAMP('%Y-%m-%d', TIMESTAMP_MILLIS(timeInMillis)) AS day,
+    name,
+    value,
+    COUNT(*) AS count
+  FROM `project.dataset.table`
+  WHERE
+    name IN (col1, col2, col3)
+  GROUP BY day, name, value
+),
+Ranks AS (
+  SELECT
+    name,
+    value,
+    CASE WHEN rank <= 10 THEN rank ELSE 1000 END AS rank
+  FROM (
+    SELECT
+      name,
+      value,
+      RANK() OVER (PARTITION BY name ORDER BY SUM(count) DESC) AS rank
+    FROM Features
+    GROUP BY name, value
+  )
+),
+MergedTables AS (
+  SELECT
+    day,
+    Features.name,
+    Features.value,
+    count,
+    rank
+  FROM Features
+  LEFT OUTER JOIN Ranks
+    USING(name, value)
+)
+SELECT
+  day,
+  name,
+  CASE WHEN rank < 1000 THEN value ELSE 'other' END AS value,
+  SUM(count) AS count,
+  MIN(rank) AS rank
+FROM MergedTables
+GROUP BY day, name, value;

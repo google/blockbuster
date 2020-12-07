@@ -1,0 +1,28 @@
+SELECT
+  ga_sessions.*,
+  CAST(lead_history.most_recent_lead AS INT64) AS most_recent_lead
+FROM `{{ ga_source }}` AS ga_sessions
+INNER JOIN (
+  WITH leads AS (
+    SELECT
+      fullVisitorId,
+      (visitStartTime + hits.time/1000) as lead_time
+    FROM `{{ ga_source }}` sessions,
+      UNNEST(hits) as hits
+    WHERE {{ lead_filter_criteria|join(' AND ') }}
+  )
+  SELECT
+    sessions.fullVisitorId,
+    sessions.visitId,
+    MAX(leads.lead_time) as most_recent_lead
+  FROM `{{ ga_source }}` sessions
+  LEFT OUTER JOIN leads
+    ON sessions.fullVisitorId = leads.fullVisitorId
+      AND sessions.visitStartTime > leads.lead_time
+  WHERE _TABLE_SUFFIX >= '{{ window_start_date }}'
+    AND sessions.fullVisitorId IN (SELECT fullVisitorId FROM leads)
+  GROUP BY 1, 2
+) AS lead_history
+USING (fullVisitorId, visitId)
+WHERE _TABLE_SUFFIX >= '{{ window_start_date }}'
+  AND lead_history.most_recent_lead IS NOT NULL

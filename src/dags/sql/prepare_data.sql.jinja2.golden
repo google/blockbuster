@@ -1,0 +1,24 @@
+
+WITH Buckets AS (
+  SELECT
+    BB_id,
+    CASE FLOOR(RAND()*10) WHEN 0 THEN 'TEST' WHEN 1 THEN 'VALIDATE' ELSE 'TRAIN' END AS MLDataSplit
+  FROM (
+    SELECT
+      DISTINCT RECENT_BB_id AS BB_id
+    FROM `project.dataset.table`
+    WHERE RECENT_most_recent_lead <> ''
+      AND DATETIME_DIFF(effectiveDate, EXTRACT(DATETIME FROM
+                              TIMESTAMP_SECONDS(CAST(RECENT_most_recent_lead AS INT64))), DAY) <= 7
+  )
+)
+SELECT
+  * EXCEPT(col1, col2, col3),
+  DATETIME_DIFF(effectiveDate, EXTRACT(DATETIME FROM
+                              TIMESTAMP_SECONDS(CAST(RECENT_most_recent_lead AS INT64))), DAY) AS days_since_recent_lead
+FROM `project.dataset.table` AS Features
+LEFT OUTER JOIN
+  Buckets ON Features.RECENT_BB_id = Buckets.BB_id
+WHERE RECENT_most_recent_lead <> ''
+  AND DATETIME_DIFF(effectiveDate, EXTRACT(DATETIME FROM
+                              TIMESTAMP_SECONDS(CAST(RECENT_most_recent_lead AS INT64))), DAY) <= 7;

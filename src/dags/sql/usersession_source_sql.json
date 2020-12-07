@@ -1,0 +1,13 @@
+{
+  "feature_columns": [
+    "col1",
+    "col2",
+    "col3"
+  ],
+  "from_tables": [
+    "Table1 AS T1",
+    "Table2 AS T2"
+  ],
+  "start_date": "20190101",
+  "end_date": "20190131"
+}

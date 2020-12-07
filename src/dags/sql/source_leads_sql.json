@@ -1,0 +1,8 @@
+{
+  "ga_source": "ga_project.dataset.table",
+  "lead_filter_criteria": [
+    "_TABLE_SUFFIX >= '20200101'",
+    "hits.eventInfo.eventCategory like '%LEAD%'"],
+  "window_start_date": "20191201"
+}
+

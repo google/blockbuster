@@ -1,0 +1,4 @@
+cached_property
+pandas
+pandas-gbq
+tenacity

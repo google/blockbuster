@@ -1,0 +1,3 @@
+SELECT {{ feature_columns|join(', ') }}
+FROM {{ from_tables|join(', ') }}
+WHERE date BETWEEN '{{ start_date }}' AND '{{ end_date }}';

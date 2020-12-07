@@ -1,0 +1,28 @@
+SELECT
+  ga_sessions.*,
+  CAST(lead_history.most_recent_lead AS INT64) AS most_recent_lead
+FROM `ga_project.dataset.table` AS ga_sessions
+INNER JOIN (
+  WITH leads AS (
+    SELECT
+      fullVisitorId,
+      (visitStartTime + hits.time/1000) as lead_time
+    FROM `ga_project.dataset.table` sessions,
+      UNNEST(hits) as hits
+    WHERE _TABLE_SUFFIX >= '20200101' AND hits.eventInfo.eventCategory like '%LEAD%'
+  )
+  SELECT
+    sessions.fullVisitorId,
+    sessions.visitId,
+    MAX(leads.lead_time) as most_recent_lead
+  FROM `ga_project.dataset.table` sessions
+  LEFT OUTER JOIN leads
+    ON sessions.fullVisitorId = leads.fullVisitorId
+      AND sessions.visitStartTime > leads.lead_time
+  WHERE _TABLE_SUFFIX >= '20191201'
+    AND sessions.fullVisitorId IN (SELECT fullVisitorId FROM leads)
+  GROUP BY 1, 2
+) AS lead_history
+USING (fullVisitorId, visitId)
+WHERE _TABLE_SUFFIX >= '20191201'
+  AND lead_history.most_recent_lead IS NOT NULL

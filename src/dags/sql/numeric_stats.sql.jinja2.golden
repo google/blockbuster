@@ -1,0 +1,10 @@
+SELECT
+  FORMAT_TIMESTAMP('%Y-%m-%d', TIMESTAMP_MILLIS(timeInMillis)) AS day,
+  name,
+  COUNT(*) AS fact_count,
+  COUNT(SAFE_CAST(value AS INT64)) AS value_count,
+  AVG(SAFE_CAST(value AS INT64)) AS average,
+  STDDEV_SAMP(SAFE_CAST(value AS INT64)) AS stddev
+FROM  `project.dataset.table`
+WHERE name IN (col1, col2, col3)
+GROUP BY 1, 2;

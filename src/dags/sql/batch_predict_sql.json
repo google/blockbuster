@@ -1,0 +1,7 @@
+{
+  "source_table": "project.dataset.table",
+  "num_segments": 50,
+  "event_label": "score",
+  "event_action": "'action'",
+  "event_category": "'category'"
+}

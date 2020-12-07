@@ -1,0 +1,17 @@
+SELECT
+  SUBSTR(cid, 3) AS cid,
+  'event' AS t,
+  score AS el,
+  'action' AS ea,
+  'category' AS ec,
+  NTILE(50) OVER (ORDER BY score ASC) AS ev
+FROM (
+  SELECT
+    BB_id AS cid,
+    RANK() OVER (PARTITION BY BB_id ORDER BY effectiveDate DESC) as rank,
+    ROUND(t1.tables.score, 5) AS score
+  FROM `project.dataset.table`,
+  UNNEST(predicted_predictionLabel) AS t1
+  WHERE t1.tables.value='true'
+)
+WHERE rank = 1;
