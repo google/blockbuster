@@ -56,10 +56,10 @@ export GCP_REGION="us-central1"
 export GCP_ZONE="${GCP_REGION}-a"
 
 export THIS_PROJECT="blockbuster" #  NOT the project_id; Just a unique name.
-export DATA_STORAGE_PROJECT="mli-app-computing" # USUALLY $GCP_PROJECT_ID
-export GCP_COMPOSER_ENV_NAME="${THIS_PROJECT}-composer-test-1"
-export GCP_BUCKET="${DATA_STORAGE_PROJECT}-${THIS_PROJECT}-files1"
-export GCP_BQ_WORKING_DATASET="${THIS_PROJECT}_working1"
+export DATA_STORAGE_PROJECT=$GCP_PROJECT_ID
+export GCP_COMPOSER_ENV_NAME="${THIS_PROJECT}-composer-test-alpha"
+export GCP_BUCKET="${DATA_STORAGE_PROJECT}-${THIS_PROJECT}-files-alpha"
+export GCP_BQ_WORKING_DATASET="${THIS_PROJECT}_working_alpha"
 
 export MODEL_WINDOW_SLIDE_TIME_DAYS=1
 export MODEL_TRAINING_TIME_HOURS=3
@@ -111,7 +111,7 @@ cat > "${DIR}"/variables.json << EOF
       "event_label":"event",
       "event_category":"activation_vars"
     },
-    "recent_dataset" : "",
-    "recent_model" : ""
+    "recent_dataset" : " ",
+    "recent_model" : " "
 }
 EOF

@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 Google LLC..
+# Copyright 2021 Google LLC..
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,21 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Lint as: python3
 """Airflow DAG that uses Google AutoML services to output batch predictions."""
 import datetime as dt
 import time
-from typing import Any, Optional, Dict, Union
+from typing import Any, Dict, Optional, Union
 
 from airflow import models
 from airflow.contrib.operators import bigquery_operator
 from airflow.contrib.operators import bigquery_to_gcs
-
-from dependencies.operators import automl_tables_batch_prediction_operator
 from dependencies.utils import airflow_utils
 from dependencies.utils import pipeline_utils
 from dependencies import blockbuster_constants
 from dependencies import dag_utils
+from dependencies.airflow.operators import automl_tables_batch_prediction_operator
 
 DAG_NAME = 'batch_predict'
 

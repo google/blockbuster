@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 Google LLC..
+# Copyright 2021 Google LLC..
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Lint as: python3
 """Airflow DAG that uses Google AutoML services."""
 from typing import List, Any, Mapping, Text, Optional, Dict
 
@@ -140,7 +139,7 @@ def _add_list_column_specs_task(
     dag: models.DAG,
     dataset_id: str,
     bb_vars: dag_utils.AirflowVarsConfig,
-) -> automl_operators.AutoMLTablesListTableSpecsOperator:
+) -> automl_operators.AutoMLTablesListColumnSpecsOperator:
   """Adds column specs list task to the dag.
 
   Args:
@@ -168,7 +167,7 @@ def _add_list_column_specs_task(
 def _add_update_dataset_task(
     dag: models.DAG,
     bb_vars: dag_utils.AirflowVarsConfig,
-) -> automl_operators.AutoMLTablesListTableSpecsOperator:
+) -> automl_operators.AutoMLTablesUpdateDatasetOperator:
   """Adds list tablespecs list task to the dag.
 
   Args:

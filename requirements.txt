@@ -2,3 +2,8 @@ cached_property
 pandas
 pandas-gbq
 tenacity
+frozendict
+google-api-python-client
+absl-py
+googleads
+immutabledict

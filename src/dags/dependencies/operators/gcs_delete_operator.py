@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 Google LLC..
+# Copyright 2021 Google LLC..
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# python3
 """Custom operator for deleting objects from GCS.
 
 TODO:(b/151696655): This module needs to be removed as gcs_delete_operator
 becomes available in g3 - //third_party/py/airflow/path/to/operators directory
 """
 
+from typing import Optional
 from airflow import models
 from airflow.contrib.hooks import gcs_hook
 from airflow.utils.decorators import apply_defaults
@@ -34,7 +34,7 @@ class GoogleCloudStorageDeleteOperator(models.BaseOperator):
                bucket: str,
                directory: str,
                google_cloud_storage_conn_id: str = 'google_cloud_default',
-               delegate_to: str = None,
+               delegate_to: Optional[str] = None,
                **kwargs):
     """Initializes a GoogleCloudStorageDeleteOperator.
 
@@ -56,6 +56,7 @@ class GoogleCloudStorageDeleteOperator(models.BaseOperator):
     self._google_cloud_storage_conn_id = google_cloud_storage_conn_id
     self._delegate_to = delegate_to
 
+  # pytype: disable=attribute-error
   def execute(self, context):
     hook = gcs_hook.GoogleCloudStorageHook(
         google_cloud_storage_conn_id=self._google_cloud_storage_conn_id,
@@ -64,5 +65,6 @@ class GoogleCloudStorageDeleteOperator(models.BaseOperator):
     objects = hook.list(self._bucket, prefix=self._directory)
 
     for obj in objects:
-      if not hook.delete(self._bucket, obj):
+      if hook.exists(self._bucket, obj) and not hook.delete(self._bucket, obj):
         raise RuntimeError('Deleting object %s failed.' % obj)
+  # pytype: enable=attribute-error

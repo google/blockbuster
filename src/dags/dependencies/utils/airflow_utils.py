@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 Google LLC..
+# Copyright 2021 Google LLC..
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,13 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# python3
 """Utility functions for Airflow pipelines."""
 import datetime
 import json
 import os
 import re
-from typing import Any, Dict, Union
+from typing import Any, Dict, Optional, Union
 
 from airflow import configuration
 from airflow import models
@@ -44,7 +43,7 @@ def initialize_airflow_dag(dag_id: str,
                            retries: int,
                            retry_delay: int,
                            start_days_ago: int = 1,
-                           local_macros: Dict[str, Any] = None,
+                           local_macros: Optional[Dict[str, Any]] = None,
                            **kwargs) -> models.DAG:
   """Creates Airflow DAG with appropriate default args.
 

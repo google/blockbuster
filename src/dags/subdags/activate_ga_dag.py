@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2020 Google LLC..
+# Copyright 2021 Google LLC..
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,14 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Lint as: python3
 """Airflow subdag that pushes the output data to Google Analytics."""
 from typing import Any, Mapping, Optional
 
 from airflow import models
 
-from dependencies.operators import data_connector_operator
-from dependencies.utils import hook_factory
+from dependencies.tcrm.operators import data_connector_operator
+from dependencies.tcrm.utils import hook_factory
 from dependencies.utils import airflow_utils
 from dependencies import blockbuster_constants
 from dependencies import dag_utils
@@ -36,13 +35,16 @@ _GA_BASE_PARAMS = {'v': '1', 'ni': 1, 'ua': 'Chrome/70.0.3538.77'}
 _GCS_CONTENT_TYPE = 'JSON'
 
 
-def _add_storage_to_ga_task(dag, bucket_uri, ga_tracking_id):
+def _add_storage_to_ga_task(dag, bucket_uri, ga_tracking_id, bq_dataset,
+                            bq_table):
   """Adds Google Cloud Storage(GCS) to Google Analytics data transfer task.
 
   Args:
     dag: The dag object which will include this task.
     bucket_uri: The uri of the GCS path containing the data.
     ga_tracking_id: The Google Analytics tracking id.
+    bq_dataset: BQ data set.
+    bq_table: BQ Table for monitoring purposes.
 
   Returns:
     The task to move data from GCS to GA.
@@ -53,6 +55,10 @@ def _add_storage_to_ga_task(dag, bucket_uri, ga_tracking_id):
       task_id='storage_to_ga',
       input_hook=hook_factory.InputHookType.GOOGLE_CLOUD_STORAGE,
       output_hook=hook_factory.OutputHookType.GOOGLE_ANALYTICS,
+      enable_monitoring=False,
+      monitoring_dataset=bq_dataset,
+      monitoring_table=bq_table,
+      monitoring_bq_conn_id='bigquery_default',
       gcs_bucket=bucket_name,
       gcs_prefix=bucket_prefix,
       gcs_content_type=_GCS_CONTENT_TYPE,
@@ -87,7 +93,10 @@ def create_dag(
       blockbuster_constants.BLOCKBUSTER_ACTIVATION_CONFIG)
 
   bucket_uri = storage_vars['gcs_output_path']
+  bq_dataset = storage_vars['bq_working_dataset']
+  bq_table = 'monitoring'
   ga_tracking_id = activation_vars['ga_tracking_id']
-  _add_storage_to_ga_task(dag, bucket_uri, ga_tracking_id)
+
+  _add_storage_to_ga_task(dag, bucket_uri, ga_tracking_id, bq_dataset, bq_table)
 
   return dag
