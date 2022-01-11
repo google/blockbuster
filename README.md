@@ -1,5 +1,7 @@
 # Blockbuster
 
+> ## DISCLAIMER: This project is no longer under active development. Though further improvements and developments are encouraged for customers and their partners to implement.
+
 ## Initial Setup
 
 ### Enable APIs
