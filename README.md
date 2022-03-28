@@ -1,6 +1,6 @@
 # Blockbuster
 
-> ## DISCLAIMER: This project is no longer under active development. Though further improvements and developments are encouraged for customers and their partners to implement.
+> ## WARNING: This project is no longer under active development and further improvements are by customers and their partners.
 
 ## Initial Setup
 
@@ -96,7 +96,7 @@ You can ignore the prompt to create credentials for each API.
         --role='roles/owner'
     ```
 
--   Grant Data Viewer permissions to the AutoML Tables service account.
+-   Grant Data Viewer permissions to the AutoML Tables service account:
 
     ```bash
       gcloud projects add-iam-policy-binding $DATA_STORAGE_PROJECT \
@@ -177,9 +177,9 @@ You can ignore the prompt to create credentials for each API.
 -   Verify the DAGS loaded correctly. Run the following:
 
     ```bash
-    gcloud composer environments run $GCP_COMPOSER_ENV_NAME \
-      --location $GCP_REGION \
-      list_dags
+      gcloud composer environments run $GCP_COMPOSER_ENV_NAME \
+        --location $GCP_REGION \
+        list_dags
     ```
 
     If you completed all above steps correctly, the result will include:
@@ -211,7 +211,7 @@ You can ignore the prompt to create credentials for each API.
     to show the new DAGs):
 
     ```bash
-    gcloud composer environments describe $GCP_COMPOSER_ENV_NAME \
-      --location $GCP_REGION \
-      --format "value(config.airflowUri)"
+      gcloud composer environments describe $GCP_COMPOSER_ENV_NAME \
+        --location $GCP_REGION \
+        --format "value(config.airflowUri)"
     ```

@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2021 Google LLC..
+# Copyright 2022 Google LLC..
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -90,7 +90,8 @@ class DataConnectorOperator(models.BaseOperator):
 
     self.monitor = monitoring.MonitoringHook(
         bq_conn_id=monitoring_bq_conn_id,
-        enable_monitoring=enable_monitoring, dag_name=dag_name,
+        enable_monitoring=enable_monitoring,
+        dag_name=dag_name,
         monitoring_dataset=monitoring_dataset,
         monitoring_table=monitoring_table,
         location=self.input_hook.get_location())

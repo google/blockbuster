@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2021 Google LLC..
+# Copyright 2022 Google LLC..
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ def load_configuration(yaml_path: str) -> Dict[str, Union[Dict[str, Any], Any]]:
   """
   try:
     content = read_file(yaml_path)
-    config = yaml.load(content)
+    config = yaml.safe_load(content)
   except (yaml.scanner.ScannerError, yaml.parser.ParserError,
           yaml.reader.ReaderError) as exception:
     raise ValueError('File could not be parsed: {file}. {msg}'.format(

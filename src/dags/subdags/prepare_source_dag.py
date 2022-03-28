@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2021 Google LLC..
+# Copyright 2022 Google LLC..
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import datetime as dt
 from typing import Union, Optional, Dict, List, Any
 
 from airflow import models
-from airflow.contrib.operators import bigquery_operator
+from airflow.providers.google.cloud.operators import bigquery as bigquery_operator
 
 from dependencies.utils import airflow_utils
 from dependencies.utils import pipeline_utils
@@ -107,7 +107,7 @@ def get_sql_params_for_prediction_stage(
 
 def add_prepare_source_data_task_to_dag(
     dag: models.DAG, sql: str, leads_table: str,
-    gcp_region: str) -> bigquery_operator.BigQueryOperator:
+    gcp_region: str) -> bigquery_operator.BigQueryExecuteQueryOperator:
   """Adds the BQ task to dag to create ML source table from GA source table.
 
   Args:
@@ -119,7 +119,7 @@ def add_prepare_source_data_task_to_dag(
   Returns:
     The configured BigQueryOperator task that was added to the input dag.
   """
-  prepare_source_data = bigquery_operator.BigQueryOperator(
+  prepare_source_data = bigquery_operator.BigQueryExecuteQueryOperator(
       task_id=TASK_NAME,
       sql=sql,
       use_legacy_sql=False,

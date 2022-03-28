@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2021 Google LLC..
+# Copyright 2022 Google LLC..
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ import time
 from typing import Any, Dict, Optional, Union
 
 from airflow import models
-from airflow.contrib.operators import bigquery_operator
-from airflow.contrib.operators import bigquery_to_gcs
+from airflow.providers.google.cloud.operators import bigquery as bigquery_operator
+from airflow.providers.google.cloud.transfers import bigquery_to_gcs
 from dependencies.utils import airflow_utils
 from dependencies.utils import pipeline_utils
 from dependencies import blockbuster_constants
@@ -140,7 +140,7 @@ def _store_final_results_to_bq(dag: models.DAG, task_id: str,
       project=storage_vars['bq_working_project'],
       dataset=storage_vars['bq_working_dataset'])
 
-  return bigquery_operator.BigQueryOperator(
+  return bigquery_operator.BigQueryExecuteQueryOperator(
       task_id=task_id,
       sql=batch_predict_sql,
       use_legacy_sql=False,
@@ -203,7 +203,7 @@ def _transfer_bigquery_to_gcs(dag, task_id) -> models.BaseOperator:
       project=storage_vars['bq_working_project'],
       dataset=storage_vars['bq_working_dataset'])
 
-  return bigquery_to_gcs.BigQueryToCloudStorageOperator(
+  return bigquery_to_gcs.BigQueryToGCSOperator(
       task_id=task_id,
       source_project_dataset_table=final_output_table,
       destination_cloud_storage_uris=[final_output_uri],

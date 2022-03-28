@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2021 Google LLC..
+# Copyright 2022 Google LLC..
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ import datetime
 from typing import Any, Mapping, Optional
 
 from airflow import models
-from airflow.contrib.operators import bigquery_operator
-from airflow.contrib.operators import dataflow_operator
+from airflow.providers.google.cloud.operators import bigquery as bigquery_operator
+from airflow.providers.google.cloud.operators import dataflow as dataflow_operator
 from airflow.utils import dates
 from airflow.utils import helpers
 
@@ -101,7 +101,7 @@ def _add_mlwp_sliding_window_pipeline_task(
     preprocess_vars: dag_utils.AirflowVarsConfig,
     storage_vars: dag_utils.AirflowVarsConfig,
     training_vars: dag_utils.AirflowVarsConfig
-) -> dataflow_operator.DataflowTemplateOperator:
+) -> dataflow_operator.DataflowTemplatedJobStartOperator:
   """Adds the Sliding Window Task of ML Windowing Pipeline to dag.
 
   Args:
@@ -123,7 +123,7 @@ def _add_mlwp_sliding_window_pipeline_task(
     snapshot_start_dt, snapshot_end_dt, output_path = _get_sliding_window_pipeline_params_for_prediction(
         prediction_vars, preprocess_vars, storage_vars)
   template_file_directory = storage_vars['gcs_dataflow_path']
-  return dataflow_operator.DataflowTemplateOperator(
+  return dataflow_operator.DataflowTemplatedJobStartOperator(
       task_id='mlwp_step3',
       template=f'{template_file_directory}/SlidingWindowPipeline',
       parameters={
@@ -156,7 +156,7 @@ def _add_mlwp_generate_features_pipeline_task(
     output_type: blockbuster_constants.PreprocessingType,
     feature_options: dag_utils.FeatureConfigListMapping,
     storage_vars: dag_utils.AirflowVarsConfig,
-) -> dataflow_operator.DataflowTemplateOperator:
+) -> dataflow_operator.DataflowTemplatedJobStartOperator:
   """Adds the Generate Features Task of ML Windowing Pipeline to dag.
 
   Args:
@@ -193,7 +193,7 @@ def _add_mlwp_generate_features_pipeline_task(
   feature_options_copy = dict(feature_options)
   feature_options_copy['features'] = mod_features
 
-  return dataflow_operator.DataflowTemplateOperator(
+  return dataflow_operator.DataflowTemplatedJobStartOperator(
       task_id='mlwp_step4',
       template=f'{template_file_directory}/GenerateFeaturesPipeline',
       parameters={
@@ -216,7 +216,7 @@ def _add_prepare_automl_data_in_bq_task(
     dag: models.DAG, output_type: blockbuster_constants.PreprocessingType,
     prediction_vars: dag_utils.AirflowVarsConfig,
     storage_vars: dag_utils.AirflowVarsConfig
-) -> bigquery_operator.BigQueryOperator:
+) -> bigquery_operator.BigQueryExecuteQueryOperator:
   """Adds the task to write the output to Big Query to dag.
 
   Args:
@@ -250,7 +250,7 @@ def _add_prepare_automl_data_in_bq_task(
       storage_vars['bq_working_project'], storage_vars['bq_working_dataset'],
       f'automl_{output_table}_input')
 
-  prepare_data_for_automl = bigquery_operator.BigQueryOperator(
+  prepare_data_for_automl = bigquery_operator.BigQueryExecuteQueryOperator(
       task_id='prepare_data_for_automl',
       sql=prepare_data_sql,
       use_legacy_sql=False,

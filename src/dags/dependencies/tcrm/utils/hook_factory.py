@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2021 Google LLC..
+# Copyright 2022 Google LLC..
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -51,8 +51,8 @@ Example usage:
 
 import enum
 
-from dependencies.tcrm.hooks import ads_cm_hook
-from dependencies.tcrm.hooks import ads_oc_hook
+from dependencies.tcrm.hooks import ads_cm_hook_v2
+from dependencies.tcrm.hooks import ads_oc_hook_v2
 from dependencies.tcrm.hooks import ads_uac_hook
 from dependencies.tcrm.hooks import bq_hook
 from dependencies.tcrm.hooks import cm_hook
@@ -69,8 +69,8 @@ class InputHookType(enum.Enum):
 
 
 class OutputHookType(enum.Enum):
-  GOOGLE_ADS_CUSTOMER_MATCH = ads_cm_hook.GoogleAdsCustomerMatchHook
-  GOOGLE_ADS_OFFLINE_CONVERSIONS = ads_oc_hook.GoogleAdsOfflineConversionsHook
+  GOOGLE_ADS_CUSTOMER_MATCH_V2 = ads_cm_hook_v2.GoogleAdsCustomerMatchHook
+  GOOGLE_ADS_OFFLINE_CONVERSIONS_V2 = ads_oc_hook_v2.GoogleAdsOfflineConversionsHook
   GOOGLE_ADS_UNIVERSAL_APP_CAMPAIGN = ads_uac_hook.AdsUniversalAppCampaignHook
   GOOGLE_ANALYTICS = ga_hook.GoogleAnalyticsHook
   GOOGLE_ANALYTICS_4 = ga4_hook.GoogleAnalyticsV4Hook

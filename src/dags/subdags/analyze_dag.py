@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2021 Google LLC..
+# Copyright 2022 Google LLC..
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ import datetime
 from typing import Any, Mapping, Optional, Dict, Union, List, Iterator
 
 from airflow import models
-from airflow.contrib.operators import bigquery_operator
-from airflow.contrib.operators import dataflow_operator
+from airflow.providers.google.cloud.operators import bigquery as bigquery_operator
+from airflow.providers.google.cloud.operators import dataflow as dataflow_operator
 from airflow.utils import helpers
 
 from dependencies.utils import airflow_utils
@@ -161,7 +161,7 @@ def add_user_session_task(
   sql = pipeline_utils.render_sql_from_template('usersession_source',
                                                 **sql_vars)
 
-  return dataflow_operator.DataflowTemplateOperator(
+  return dataflow_operator.DataflowTemplatedJobStartOperator(
       task_id=task_id,
       template=f'{template_file_directory}/UserSessionPipeline',
       parameters={
@@ -176,7 +176,7 @@ def add_user_session_task(
 def add_data_visualization_task(
     dag: models.DAG, task_id: str, preprocess_vars: dag_utils.AirflowVarsConfig,
     storage_vars: dag_utils.AirflowVarsConfig
-) -> dataflow_operator.DataflowTemplateOperator:
+) -> dataflow_operator.DataflowTemplatedJobStartOperator:
   """Builds the DataVisualizationPipeline Operator.
 
   Args:
@@ -201,7 +201,7 @@ def add_data_visualization_task(
   lookback_days = int(preprocess_vars['lookback_days'])
   prediction_days = int(preprocess_vars['prediction_days'])
 
-  return dataflow_operator.DataflowTemplateOperator(
+  return dataflow_operator.DataflowTemplatedJobStartOperator(
       task_id=task_id,
       template=f'{template_file_directory}/DataVisualizationPipeline',
       parameters={
@@ -234,7 +234,7 @@ def add_data_visualization_task(
 def add_categorical_stats_task(
     dag: models.DAG, feature_vars: dag_utils.FeatureConfigListMapping,
     storage_vars: dag_utils.AirflowVarsConfig
-) -> bigquery_operator.BigQueryOperator:
+) -> bigquery_operator.BigQueryExecuteQueryOperator:
   """Builds an Operator that generates categorical fact stats within a DAG.
 
   Args:
@@ -255,7 +255,7 @@ def add_categorical_stats_task(
           f'\'{dag_utils.get_feature_name(x)}\'' for x in cat_feats
       ])
 
-  return bigquery_operator.BigQueryOperator(
+  return bigquery_operator.BigQueryExecuteQueryOperator(
       task_id=_GENERATE_CATEGORICAL_STATS_TASK,
       sql=categorical_stats_sql,
       use_legacy_sql=False,
@@ -269,7 +269,7 @@ def add_categorical_stats_task(
 def add_numeric_stats_task(
     dag: models.DAG, feature_vars: dag_utils.FeatureConfigListMapping,
     storage_vars: dag_utils.AirflowVarsConfig
-) -> bigquery_operator.BigQueryOperator:
+) -> bigquery_operator.BigQueryExecuteQueryOperator:
   """Builds an Operator that generates numeric fact stats within a DAG.
 
   Args:
@@ -290,7 +290,7 @@ def add_numeric_stats_task(
           f'\'{dag_utils.get_feature_name(x)}\'' for x in num_feats
       ])
 
-  return bigquery_operator.BigQueryOperator(
+  return bigquery_operator.BigQueryExecuteQueryOperator(
       task_id=_GENERATE_NUMERIC_STATS_TASK,
       sql=numeric_stats_sql,
       use_legacy_sql=False,
